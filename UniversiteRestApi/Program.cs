@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using UniversiteDomain.DataAdapters;
 using UniversiteDomain.DataAdapters.DataAdaptersFactory;
+using UniversiteDomain.JeuxDeDonnees;
 using UniversiteEFDataProvider.Data;
 using UniversiteEFDataProvider.RepositoryFactories;
 
@@ -40,19 +41,32 @@ app.UseSwaggerUI();
 
 // Initisation de la base de données
 // A commenter si vous ne voulez pas vider la base à chaque Run!
+// using(var scope = app.Services.CreateScope())
+// {
+//     // On récupère le logger pour afficher des messages. On l'a mis dans les services de l'application
+//     var logger = scope.ServiceProvider.GetRequiredService<ILogger<UniversiteDbContext>>();
+//     // On récupère le contexte de la base de données qui est stocké sans les services
+//     DbContext context = scope.ServiceProvider.GetRequiredService<UniversiteDbContext>();
+//     logger.LogInformation("Initialisation de la base de données");
+//     // Suppression de la BD
+//     logger.LogInformation("Suppression de la BD si elle existe");
+//     await context.Database.EnsureDeletedAsync();
+//     // Recréation des tables vides
+//     logger.LogInformation("Création de la BD et des tables à partir des entities");
+//     await context.Database.EnsureCreatedAsync();
+// }
+
+
+// Initisation de la base de données
+ILogger logger = app.Services.GetRequiredService<ILogger<BdBuilder>>();
+logger.LogInformation("Chargement des données de test");
 using(var scope = app.Services.CreateScope())
 {
-    // On récupère le logger pour afficher des messages. On l'a mis dans les services de l'application
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<UniversiteDbContext>>();
-    // On récupère le contexte de la base de données qui est stocké sans les services
-    DbContext context = scope.ServiceProvider.GetRequiredService<UniversiteDbContext>();
-    logger.LogInformation("Initialisation de la base de données");
-    // Suppression de la BD
-    logger.LogInformation("Suppression de la BD si elle existe");
-    await context.Database.EnsureDeletedAsync();
-    // Recréation des tables vides
-    logger.LogInformation("Création de la BD et des tables à partir des entities");
-    await context.Database.EnsureCreatedAsync();
+    UniversiteDbContext context = scope.ServiceProvider.GetRequiredService<UniversiteDbContext>();
+    IRepositoryFactory repositoryFactory = scope.ServiceProvider.GetRequiredService<IRepositoryFactory>();   
+    // C'est ici que vous changez le jeu de données pour démarrer sur une base vide par exemple
+    BdBuilder seedBD = new BasicBdBuilder(repositoryFactory);
+    await seedBD.BuildUniversiteBdAsync();
 }
 
 // Exécution de l'application
