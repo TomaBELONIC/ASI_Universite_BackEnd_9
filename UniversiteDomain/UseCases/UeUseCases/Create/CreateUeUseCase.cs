@@ -36,4 +36,9 @@ public class CreateUeUseCase(IRepositoryFactory repositoryFactory)
         // Le métier définit que les nom doite contenir plus de 3 lettres
         if (ue.Intitule.Length < 3) throw new InvalidIntituleUeException(ue.Intitule +" incorrect - L'intitulé d'une UE doit contenir plus de 3 caractères");
     }
+    
+    public bool IsAuthorized(string role)
+    {
+        return role.Equals(Roles.Responsable) || role.Equals(Roles.Scolarite);
+    }
 }

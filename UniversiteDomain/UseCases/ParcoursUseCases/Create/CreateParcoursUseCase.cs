@@ -39,4 +39,9 @@ public class CreateParcoursUseCase(IRepositoryFactory repositoryFactory)
         // Pour l'année de formation, voir si c'est 1 ou 2
         if (!(lesDeuxAnneesDeMaster.Contains(parcours.AnneeFormation))) throw new InvalidAnneeFormationException(parcours.AnneeFormation +" incorrect - L'année de formation est soit 1 soit 2");
     }
+    
+    public bool IsAuthorized(string role)
+    {
+        return role.Equals(Roles.Responsable) || role.Equals(Roles.Scolarite);
+    }
 }

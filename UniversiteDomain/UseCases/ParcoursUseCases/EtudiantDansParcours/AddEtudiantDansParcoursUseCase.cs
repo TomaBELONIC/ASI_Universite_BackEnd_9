@@ -16,7 +16,7 @@ public class AddEtudiantDansParcoursUseCase(IRepositoryFactory repositoryFactory
       public async Task<Parcours> ExecuteAsync(long idParcours, long idEtudiant)
       {
           await CheckBusinessRules(idParcours, idEtudiant); 
-          return await repositoryFactory.ParcoursRepository().AffecterEtudiantToParcoursAsync(idParcours, idEtudiant);
+          return await repositoryFactory.ParcoursRepository().AffecterEtudiantToParcoursAsync(idEtudiant, idParcours);
       }
 
       // Rajout de plusieurs étudiants dans un parcours
@@ -58,5 +58,10 @@ public class AddEtudiantDansParcoursUseCase(IRepositoryFactory repositoryFactory
         // On vérifie que l'étudiant n'est pas déjà dans le parcours
         List<Etudiant> inscrit = await repositoryFactory.EtudiantRepository().FindByConditionAsync(e=>e.Id.Equals(idEtudiant) && e.ParcoursSuivi.Id.Equals(idParcours));
         if (inscrit is { Count: > 0 }) throw new DuplicateInscriptionException(idEtudiant+" est déjà inscrit dans le parcours : "+idParcours);     
+    }
+    
+    public bool IsAuthorized(string role)
+    {
+        return role.Equals(Roles.Responsable) || role.Equals(Roles.Scolarite);
     }
 }

@@ -3,7 +3,7 @@ using UniversiteDomain.Entities;
 using UniversiteDomain.Exceptions.NoteAEtudiantExceptions;
 using UniversiteDomain.Exceptions.UeDansParcoursExceptions;
 
-namespace UniversiteDomain.UseCases.EtudiantUseCases.NoteAEtudiant;
+namespace UniversiteDomain.UseCases.NotesUseCases.Add;
 
 public class AddNoteAEtudiantUseCase(IRepositoryFactory repositoryFactory)
 {
@@ -54,6 +54,11 @@ public class AddNoteAEtudiantUseCase(IRepositoryFactory repositoryFactory)
                 throw new DuplicateNotePourUePourEtudiantException(note.IdEtudiant + " a déjà cette note pour cette UE : " + n.IdUe);
             }
         }
+    }
+    
+    public bool IsAuthorized(string role)
+    {
+        return role.Equals(Roles.Responsable) || role.Equals(Roles.Scolarite);
     }
 }
 
