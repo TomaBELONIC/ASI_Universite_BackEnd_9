@@ -14,7 +14,7 @@ public class Etudiant
     
     // Liste des notes d'un étudiant
     // La liste est vide aussi comme pour les autres cas, une liste null donc non allouée en mémoire ne représente rien
-    public List<Note> Notes { get; set; } = new();
+    public List<Note> NotesObtenues { get; set; } = new();
     
     public override string ToString()
     {

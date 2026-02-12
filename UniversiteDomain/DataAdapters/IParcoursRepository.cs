@@ -4,16 +4,16 @@ namespace UniversiteDomain.DataAdapters;
 
 public interface IParcoursRepository : IRepository<Parcours>
 {
-    Task<Parcours> AddEtudiantAsync(Parcours parcours, Etudiant etudiant);
-    Task<Parcours> AddEtudiantAsync(Parcours ? parcours, List<Etudiant> etudiants);
+    Task<Parcours> AffecterEtudiantToParcoursAsync(Etudiant etudiant, Parcours parcours);
+    Task<Parcours> AffecterEtudiantToParcoursAsync(long idEtudiant, long idParcours);
     
-    Task<Parcours> AddEtudiantAsync(long idParcours, long idEtudiant);
-    Task<Parcours> AddEtudiantAsync(long idParcours, long[] idEtudiants);
+    Task<Parcours> AffecterEtudiantToParcoursAsync(List<Etudiant> etudiants, Parcours parcours);
+    Task<Parcours> AffecterEtudiantToParcoursAsync(long[] idEtudiants, long idParcours);
     
     
-    Task<Parcours> AddUeAsync(Parcours parcours, Ue ue);
-    Task<Parcours> AddUeAsync(Parcours ? parcours, List<Ue> ue);
+    Task<Parcours> AffecterUeToParcoursAsync(Ue ue, Parcours parcours);
+    Task<Parcours> AffecterUeToParcoursAsync(List<Ue> ue, Parcours parcours);
     
-    Task<Parcours> AddUeAsync(long idParcours, long idUe);
-    Task<Parcours> AddUeAsync(long idParcours, long[] idUes);
+    Task<Parcours> AffecterUeToParcoursAsync(long idUe, long idParcours);
+    Task<Parcours> AffecterUeToParcoursAsync(long[] idUes, long idParcours);
 }

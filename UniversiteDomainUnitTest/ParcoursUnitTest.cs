@@ -82,7 +82,7 @@ public class ParcoursUnitTest
             .Setup(repo=>repo.FindByConditionAsync(e=>e.Id.Equals(idParcours)))
             .ReturnsAsync(parcourses);
         mockParcours
-            .Setup(repo => repo.AddEtudiantAsync(idParcours, idEtudiant))
+            .Setup(repo => repo.AffecterEtudiantToParcoursAsync(idParcours, idEtudiant))
             .ReturnsAsync(parcoursFinal);
         
         // Création d'une fausse factory qui contient les faux repositories
@@ -135,7 +135,7 @@ public class ParcoursUnitTest
             .Setup(repo=>repo.FindByConditionAsync(e=>e.Id.Equals(idParcours)))
             .ReturnsAsync(lesParcoursInitiaux);
         mockParcoursRepository
-            .Setup(repo => repo.AddUeAsync(idParcours, idUe))
+            .Setup(repo => repo.AffecterUeToParcoursAsync(idParcours, idUe))
             .ReturnsAsync(parcoursAModifier);
         
         // Création d'une fausse factory qui contient les faux repositories

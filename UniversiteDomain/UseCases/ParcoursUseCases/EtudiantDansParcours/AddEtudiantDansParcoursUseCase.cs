@@ -16,7 +16,7 @@ public class AddEtudiantDansParcoursUseCase(IRepositoryFactory repositoryFactory
       public async Task<Parcours> ExecuteAsync(long idParcours, long idEtudiant)
       {
           await CheckBusinessRules(idParcours, idEtudiant); 
-          return await repositoryFactory.ParcoursRepository().AddEtudiantAsync(idParcours, idEtudiant);
+          return await repositoryFactory.ParcoursRepository().AffecterEtudiantToParcoursAsync(idParcours, idEtudiant);
       }
 
       // Rajout de plusieurs étudiants dans un parcours
@@ -28,7 +28,7 @@ public class AddEtudiantDansParcoursUseCase(IRepositoryFactory repositoryFactory
       public async Task<Parcours> ExecuteAsync(long idParcours, long [] idEtudiants)
       {
         foreach(var id in idEtudiants) await CheckBusinessRules(idParcours, id);
-        return await repositoryFactory.ParcoursRepository().AddEtudiantAsync(idParcours, idEtudiants);
+        return await repositoryFactory.ParcoursRepository().AffecterEtudiantToParcoursAsync(idEtudiants, idParcours);
       }   
 
     private async Task CheckBusinessRules(long idParcours, long idEtudiant)

@@ -4,7 +4,7 @@ namespace UniversiteDomain.DataAdapters;
 
 public interface INoteRepository : IRepository<Note>
 {
-    Task<Note> AddNoteAsync(Note note);
+    Task<Note> AffecterNoteAsync(Note note);
     
-    Task<Note> AddNoteAsync(long IdEtudiant, long IdUe, float note);
+    Task<Note> AffecterNoteAsync(long idEtudiant, long idUe, float note);
 }

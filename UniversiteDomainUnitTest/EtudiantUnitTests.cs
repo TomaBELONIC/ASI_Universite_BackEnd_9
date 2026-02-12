@@ -101,7 +101,7 @@ public class EtudiantUnitTest
         
         Note Note1 = new Note{Etudiant = etudiantTeste, Ue = ue1, IdEtudiant = etudiantTeste.Id, IdUe = IdUe1, Valeur = ValeurNote};
         
-        etudiantTeste.Notes.Add(Note1);
+        etudiantTeste.NotesObtenues.Add(Note1);
         
         List<Ue> ues = new List<Ue>();
         ues.Add(ue1);
@@ -118,7 +118,7 @@ public class EtudiantUnitTest
             .ReturnsAsync(lesNotesDelEtudiantInitiales);
 
         mockNoteRepository
-            .Setup(repo => repo.AddNoteAsync(IdEtudiant, IdUe1, ValeurNote))
+            .Setup(repo => repo.AffecterNoteAsync(IdEtudiant, IdUe1, ValeurNote))
             .ReturnsAsync(Note1);
         
         // Création d'une fausse factory qui contient les faux repositories
@@ -138,7 +138,7 @@ public class EtudiantUnitTest
         
         Assert.That(noteTest, Is.Not.Null);
         Assert.That(noteTest.Valeur, Is.EqualTo(ValeurNote));
-        Assert.That(etudiantTeste.Notes[0], Is.EqualTo(noteTest));
+        Assert.That(etudiantTeste.NotesObtenues[0], Is.EqualTo(noteTest));
     }
 
 }
