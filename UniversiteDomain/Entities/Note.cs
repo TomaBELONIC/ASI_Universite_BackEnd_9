@@ -18,7 +18,7 @@ namespace UniversiteDomain.Entities
          */
         
         // valeur moyenne finale de l'UE (entre 0 et 20)
-        public float Valeur { get; set; }
+        public decimal Valeur { get; set; }
 
         public override string ToString()
         {

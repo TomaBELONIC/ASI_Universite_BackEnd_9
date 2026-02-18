@@ -5,6 +5,7 @@ using UniversiteDomain.UseCases.NotesUseCases.Add;
 using UniversiteDomain.UseCases.ParcoursUseCases.Create;
 using UniversiteDomain.UseCases.ParcoursUseCases.EtudiantDansParcours;
 using UniversiteDomain.UseCases.ParcoursUseCases.UeDansParcours;
+using UniversiteDomain.UseCases.UeUseCases.ParcoursDansUe;
 using UniversiteDomain.UseCases.SecurityUseCases;
 using UniversiteDomain.UseCases.SecurityUseCases.Create;
 using UniversiteDomain.UseCases.UeUseCases.Create;
@@ -22,7 +23,9 @@ public class BasicBdBuilder(IRepositoryFactory repositoryFactory) : BdBuilder(re
         new Etudiant { Id=3,NumEtud = "62830483", Nom = "Barassi", Prenom = "Pierre-Louis", Email = "pierre-louis.barassi@etud.u-picardie.fr" },
         new Etudiant { Id=4,NumEtud = "J6HZK922", Nom = "Jelong", Prenom = "Antony", Email = "antony.jelong@etud.u-picardie.fr" },
         new Etudiant { Id=5,NumEtud = "PAD89345", Nom = "Akki", Prenom = "Pita", Email = "pita.akki@etud.u-picardie.fr" },
-        new Etudiant { Id=6,NumEtud = "RG8647FF", Nom = "Mauvaka", Prenom = "Peato", Email = "peato.mauvaka@etud.u-picardie.fr" }
+        new Etudiant { Id=6,NumEtud = "RG8647FF", Nom = "Mauvaka", Prenom = "Peato", Email = "peato.mauvaka@etud.u-picardie.fr" },
+        new Etudiant { Id=7,NumEtud = "87F64FRG", Nom = "Belonic", Prenom = "Toma", Email = "toma.belonic@etud.u-picardie.fr" },
+        new Etudiant { Id=8,NumEtud = "J6Z65JEI", Nom = "Piaf", Prenom = "Edith", Email = "edith.piaf@etud.u-picardie.fr" }
     ];
     private struct UserNonEtudiant
     {
@@ -69,7 +72,9 @@ public class BasicBdBuilder(IRepositoryFactory repositoryFactory) : BdBuilder(re
         new Inscription { EtudiantId = 3, ParcoursId = 1 },
         new Inscription { EtudiantId = 4, ParcoursId = 1 },
         new Inscription { EtudiantId = 5, ParcoursId = 3 },
-        new Inscription { EtudiantId = 6, ParcoursId = 4 }
+        new Inscription { EtudiantId = 6, ParcoursId = 4 },
+        new Inscription { EtudiantId = 7, ParcoursId = 4 },
+        new Inscription { EtudiantId = 8, ParcoursId = 4 }
     ];
 
     private struct UeDansParcours
@@ -90,22 +95,22 @@ public class BasicBdBuilder(IRepositoryFactory repositoryFactory) : BdBuilder(re
     
     private struct Note
     {
-        public long EtudiantId;
-        public long UeId;
-        public float Valeur;
+        public long IdEtudiant;
+        public long IdUe;
+        public decimal Valeur;
     }
     
     private readonly Note[] _notes =
     [
-        new Note { UeId = 1, EtudiantId = 2, Valeur = 12 },
-        new Note { UeId = 1, EtudiantId = 3, Valeur = (float)8.5 },
-        new Note { UeId = 1, EtudiantId = 4, Valeur = 16 },
-        new Note { UeId = 2, EtudiantId = 2, Valeur = 14 },
-        new Note { UeId = 2, EtudiantId = 3, Valeur = 6 },
-        new Note { UeId = 3, EtudiantId = 4, Valeur = (float)11.5 },
-        new Note { UeId = 4, EtudiantId = 1, Valeur = 10 },
-        new Note { UeId = 4, EtudiantId = 5, Valeur = (float)18.3 },
-        new Note { UeId = 4, EtudiantId = 6, Valeur = 12 }
+        new Note { IdUe = 1, IdEtudiant = 2, Valeur = 12 },
+        new Note { IdUe = 1, IdEtudiant = 3, Valeur = (decimal)8.5 },
+        new Note { IdUe = 1, IdEtudiant = 4, Valeur = 16 },
+        new Note { IdUe = 2, IdEtudiant = 2, Valeur = 14 },
+        new Note { IdUe = 2, IdEtudiant = 3, Valeur = 6 },
+        new Note { IdUe = 3, IdEtudiant = 4, Valeur = (decimal)11.5 },
+        new Note { IdUe = 4, IdEtudiant = 1, Valeur = 10 },
+        new Note { IdUe = 4, IdEtudiant = 5, Valeur = (decimal)18.3 },
+        new Note { IdUe = 4, IdEtudiant = 6, Valeur = 12 }
     ];
     protected override async Task RegenererBdAsync()
     {
@@ -148,13 +153,18 @@ public class BasicBdBuilder(IRepositoryFactory repositoryFactory) : BdBuilder(re
         {
             await new AddUeDansParcoursUseCase(repositoryFactory).ExecuteAsync(u.ParcoursId, u.UeId);
         }
+        
+        // foreach(UeDansParcours u in _maquette)
+        // {
+        //     await new AddsParcoursDansUeUseCase(repositoryFactory).ExecuteAsync(u.ParcoursId, u.UeId);
+        // }
     }
 
     protected override async Task NoterAsync()
     {
         foreach( var note in _notes)
         {
-            await new AddNoteAEtudiantUseCase(repositoryFactory).ExecuteAsync(note.EtudiantId,note.UeId, note.Valeur);
+            await new AddNoteAEtudiantUseCase(repositoryFactory).ExecuteAsync(note.IdEtudiant,note.IdUe, note.Valeur);
         }
     }
     

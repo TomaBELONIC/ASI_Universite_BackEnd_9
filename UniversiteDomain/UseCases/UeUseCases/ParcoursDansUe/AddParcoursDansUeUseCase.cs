@@ -1,22 +1,23 @@
 using UniversiteDomain.DataAdapters.DataAdaptersFactory;
 using UniversiteDomain.Entities;
+using UniversiteDomain.Exceptions.ParcoursDansUe;
 using UniversiteDomain.Exceptions.UeDansParcoursExceptions;
 
-namespace UniversiteDomain.UseCases.ParcoursUseCases.UeDansParcours;
+namespace UniversiteDomain.UseCases.UeUseCases.ParcoursDansUe;
 
-public class AddUeDansParcoursUseCase(IRepositoryFactory repositoryFactory)
+public class AddsParcoursDansUeUseCase(IRepositoryFactory repositoryFactory)
 {
-    // Rajout d'un parcours dans une Ue
-      public async Task<Parcours> ExecuteAsync(Parcours parcours, Ue ue)
+    // Rajout d'une Ue dans un parcours
+      public async Task<Ue> ExecuteAsync(Parcours parcours, Ue ue)
       {
           ArgumentNullException.ThrowIfNull(parcours);
           ArgumentNullException.ThrowIfNull(ue);
           return await ExecuteAsync(parcours.Id, ue.Id); 
       }  
-      public async Task<Parcours> ExecuteAsync(long idParcours, long idUe)
+      public async Task<Ue> ExecuteAsync(long idParcours, long idUe)
       {
           await CheckBusinessRules(idParcours, idUe); 
-          return await repositoryFactory.ParcoursRepository().AffecterUeToParcoursAsync(idUe, idParcours);
+          return await repositoryFactory.UeRepository().AffecterParcoursAsync(idUe, idParcours);
       }
 
       // Rajout de plusieurs étudiants dans un parcours
@@ -55,14 +56,14 @@ public class AddUeDansParcoursUseCase(IRepositoryFactory repositoryFactory)
         List<Parcours> parcours = await repositoryFactory.ParcoursRepository().FindByConditionAsync(p=>p.Id.Equals(idParcours));;
         if (parcours ==null) throw new ParcoursNotFoundException(idParcours.ToString());
         
-        // On vérifie que l'Ue n'est pas déjà dans le parcours
-        if (parcours[0].UesEnseignees!=null)
+        // On vérifie que le Parcours n'est pas déjà dans l'UE
+        if (ue[0].EnseigneeDans!=null)
         {
-            // Des ues sont déjà enregistrées dans le parcours
-            // On recherche si l'ue qu'on veut ajouter n'existe pas déjà
-            List<Ue> inscrites = parcours[0].UesEnseignees;    
-            var trouve=inscrites.FindAll(e=>e.Id.Equals(idUe));
-            if (trouve is { Count: > 0 }) throw new DuplicateUeDansParcoursException(idUe+" est déjà présente dans le parcours : "+idParcours);   
+            // Des parcours sont déjà enregistrées dans l'UE
+            // On recherche si le parcours qu'on veut ajouter n'existe pas déjà
+            List<Parcours> enseigneeDansCesParcours = ue[0].EnseigneeDans;    
+            var trouve=enseigneeDansCesParcours.FindAll(e=>e.Id.Equals(idParcours));
+            if (trouve is { Count: > 0 }) throw new DuplicateParcoursDansUeException(idParcours+" est déjà présent dans l'UE : idUe");   
         }
     }
     

@@ -4,15 +4,15 @@ namespace UniversiteDomain.Dtos;
 
 public class NoteAvecUeDto
 {
-    public long EtudiantId { get; set; }
-    public long UeId { get; set; }
+    public long IdEtudiant { get; set; }
+    public long IdUe { get; set; }
     public UeDto UeDto{get; set;}
-    public float Valeur { get; set; }
+    public decimal Valeur { get; set; }
 
     public NoteAvecUeDto ToDto(Note note)
     {
-        EtudiantId = note.IdEtudiant;
-        UeId = note.IdUe;
+        IdEtudiant = note.IdEtudiant;
+        IdUe = note.IdUe;
         UeDto = new UeDto().ToDto(note.Ue);
         Valeur = note.Valeur;
         return this;
@@ -20,7 +20,7 @@ public class NoteAvecUeDto
     
     public Note ToEntity()
     {
-        return new Note {IdEtudiant = this.EtudiantId, IdUe = this.UeId, Valeur = this.Valeur};
+        return new Note {IdEtudiant = this.IdEtudiant, IdUe = this.IdUe, Valeur = this.Valeur};
     }
     
     public static List<NoteAvecUeDto> ToDtos(List<Note> notes)

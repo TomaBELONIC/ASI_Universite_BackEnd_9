@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+// using Microsoft.CodeAnalysis.Elfie.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -11,7 +12,21 @@ using UniversiteEFDataProvider.Data;
 using UniversiteEFDataProvider.Entities;
 using UniversiteEFDataProvider.RepositoryFactories;
 
+
+using CsvHelper;
+using CsvHelper.Configuration;
+using System.Globalization;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using UniversiteDomain.Entities;
+
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<KestrelServerOptions>(options =>
+{
+    options.Limits.MinRequestBodyDataRate = new MinDataRate(bytesPerSecond: 50, gracePeriod: TimeSpan.FromMinutes(5));
+});
+
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -20,7 +35,7 @@ builder.Services.AddControllers();
 // Modification de la ligne uilder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Projet Universite", Version = "v1" });
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Projet Universite Toma BELONIC", Version = "v1" });
 
 // Add Bearer Token Authentication
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -121,24 +136,6 @@ app.UseAuthorization();
 // Commentez les deux lignes ci-dessous pour désactiver Swagger (en production par exemple)
 app.UseSwagger();
 app.UseSwaggerUI();
-
-// Initisation de la base de données
-// A commenter si vous ne voulez pas vider la base à chaque Run!
-// using(var scope = app.Services.CreateScope())
-// {
-//     // On récupère le logger pour afficher des messages. On l'a mis dans les services de l'application
-//     var logger = scope.ServiceProvider.GetRequiredService<ILogger<UniversiteDbContext>>();
-//     // On récupère le contexte de la base de données qui est stocké sans les services
-//     DbContext context = scope.ServiceProvider.GetRequiredService<UniversiteDbContext>();
-//     logger.LogInformation("Initialisation de la base de données");
-//     // Suppression de la BD
-//     logger.LogInformation("Suppression de la BD si elle existe");
-//     await context.Database.EnsureDeletedAsync();
-//     // Recréation des tables vides
-//     logger.LogInformation("Création de la BD et des tables à partir des entities");
-//     await context.Database.EnsureCreatedAsync();
-// }
-
 
 // Initisation de la base de données
 ILogger logger = app.Services.GetRequiredService<ILogger<BdBuilder>>();

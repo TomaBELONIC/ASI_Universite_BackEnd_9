@@ -3,24 +3,23 @@ using UniversiteDomain.Entities;
 using UniversiteDomain.Exceptions.NoteAEtudiantExceptions;
 using UniversiteDomain.Exceptions.UeDansParcoursExceptions;
 
-namespace UniversiteDomain.UseCases.NotesUseCases.Add;
+namespace UniversiteDomain.UseCases.NotesUseCases.Update;
 
-public class AddNoteAEtudiantUseCase(IRepositoryFactory repositoryFactory)
+public class UpdateNoteAEtudiantUseCase(IRepositoryFactory repositoryFactory)
 {
-    // Rajout d'une Note à un Etudiant
       public async Task<Note> ExecuteAsync(long IdEtudiant, long IdUe, decimal note)
       {
           ArgumentNullException.ThrowIfNull(IdEtudiant);
           ArgumentNullException.ThrowIfNull(IdUe);
           ArgumentNullException.ThrowIfNull(note);
           
-          return await repositoryFactory.NoteRepository().AffecterNoteAsync(IdEtudiant, IdUe, note);
+          return await repositoryFactory.NoteRepository().ModifierNoteAsync(IdEtudiant, IdUe, note);
       }  
       public async Task<Note> ExecuteAsync(Note note)
       {
           await CheckDataSources();
           await CheckBusinessRules(note); 
-          return await repositoryFactory.NoteRepository().AffecterNoteAsync(note);
+          return await repositoryFactory.NoteRepository().ModifierNoteAsync(note);
       }
       
       public async Task<IReadOnlyList<Note>> ExecuteAsync(IEnumerable<Note> notes)
@@ -28,15 +27,14 @@ public class AddNoteAEtudiantUseCase(IRepositoryFactory repositoryFactory)
           if (notes == null) throw new ArgumentNullException(nameof(notes));
 
           var lesNotes = new List<Note>();
-          
+
           await CheckDataSources();
 
           foreach (var note in notes)
           {
               await CheckBusinessRules(note);
-
-              var added = await repositoryFactory.NoteRepository().AffecterNoteAsync(note);
-              lesNotes.Add(added);
+              var updated = await repositoryFactory.NoteRepository().ModifierNoteAsync(note);
+              lesNotes.Add(updated);
           }
 
           return lesNotes;
@@ -59,17 +57,8 @@ public class AddNoteAEtudiantUseCase(IRepositoryFactory repositoryFactory)
         // On recherche l'UE
         List<Ue> ue = await repositoryFactory.UeRepository().FindByConditionAsync(e=>e.Id.Equals(note.IdUe));;
         if (ue is { Count: 0 }) throw new UeNotFoundException(note.IdUe.ToString());
-        
-        // On regarde si l'étudiant n'a pas déjà la note
-        foreach (Note n in etudiant[0].NotesObtenues)
-        {
-            if ((n.IdUe.Equals(note.IdUe) && n.IdEtudiant.Equals(note.IdEtudiant)))
-            {
-                throw new DuplicateNotePourUePourEtudiantException(note.IdEtudiant + " a déjà cette note pour cette UE : " + n.IdUe);
-            }
-        }
     }
-
+    
     private async Task CheckDataSources()
     {
         // Vérifions tout d'abord que nous sommes bien connectés aux datasources
